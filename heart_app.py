@@ -26,39 +26,45 @@ st_slope = st.selectbox("ST Slope", ["Up", "Flat", "Down"])
 # When Predict is clicked
 if st.button("Predict"):
 
-    # Create a raw input dictionary
     raw_input = {
-        'Age': age,
-        'RestingBP': resting_bp,
-        'Cholesterol': cholesterol,
-        'FastingBS': fasting_bs,
-        'MaxHR': max_hr,
-        'Oldpeak': oldpeak,
-        'Sex_' + sex: 1,
-        'ChestPainType_' + chest_pain: 1,
-        'RestingECG_' + resting_ecg: 1,
-        'ExerciseAngina_' + exercise_angina: 1,
-        'ST_Slope_' + st_slope: 1
+        "age": age,
+        "restingbp": resting_bp,
+        "cholesterol": cholesterol,
+        "fastingbs": fasting_bs,
+        "maxhr": max_hr,
+        "oldpeak": oldpeak,
+
+        "sex_m": 1 if sex == "M" else 0,
+
+        "chestpaintype_ata": 1 if chest_pain == "ATA" else 0,
+        "chestpaintype_nap": 1 if chest_pain == "NAP" else 0,
+        "chestpaintype_ta": 1 if chest_pain == "TA" else 0,
+
+        "restingecg_normal": 1 if resting_ecg == "Normal" else 0,
+        "restingecg_st": 1 if resting_ecg == "ST" else 0,
+
+        "exerciseangina_y": 1 if exercise_angina == "Y" else 0,
+
+        "st_slope_flat": 1 if st_slope == "Flat" else 0,
+        "st_slope_up": 1 if st_slope == "Up" else 0
     }
 
-    # Create input dataframe
     input_df = pd.DataFrame([raw_input])
 
-    # Fill in missing columns with 0s
+    # Add any missing columns
     for col in expected_columns:
         if col not in input_df.columns:
             input_df[col] = 0
 
-    # Reorder columns
+    # Exact same column order as training
     input_df = input_df[expected_columns]
 
-    # Scale the input
+    # Scale using training scaler
     scaled_input = scaler.transform(input_df)
 
-    # Make prediction
+    # Predict
     prediction = model.predict(scaled_input)[0]
 
-    # Show result
     if prediction == 1:
         st.error("⚠️ High Risk of Heart Disease")
     else:

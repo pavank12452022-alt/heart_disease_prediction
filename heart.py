@@ -50,7 +50,8 @@ plt.show()
 print(sh.analyze(df))
 
 df_encode=pd.get_dummies(df,drop_first=True)
-df_encode=df_encode.astype(int)
+bool_cols = df_encode.select_dtypes(include="bool").columns
+df_encode[bool_cols] = df_encode[bool_cols].astype(int)
 # num_cols=['age', 'restingbp', 'cholesterol', 'maxhr', 'oldpeak']
 # scaler=StandardScaler()
 # df_encode[num_cols] = scaler.fit_transform(df_encode[num_cols])
